@@ -3,28 +3,31 @@
 #include<stdlib.h>
 #include<string.h>
 #include<ctype.h>
+#include<vector>
 
 using namespace std;
 
-// EXP : { KEYWORD : VARIABLE : CONSTANT : OPERATOR : CONSTANT } 
-//		     non		
-
 enum token {
-	TT_OP, //OPERATOR
+	TT_OP, //OPERATOR	
 	TT_SEP,  //SEPARATOR
 	TT_KEY, //KEYWORD
-	TT_CONST, //CONSTANT
+	TT_CONST, //CONSTANT	
 	TT_VAR, //VAR
 	TT_OUT, //OUTPUT
-	TT_IGN, // TO BE IGNORED
+	TT_LEFTPARENT, // (
+	TT_RIGHTPARENT, // )
+	TT_EQUALS, // =
+	TT_IGN, //TBIGNORED
 };
 
 int isKeyword(char buffer[]);
 
-int main() {
+void parser(vector <token> vecOfElements);
 
+int main() {
+	vector <token> toEvaluate;
 	char ch, buffer[15];
-	char operators[] = "+-*/%=", separators[] = ";,(){}";
+	char operators[] = "+-*/%", separators[] = ";,(){}";
 
 	int i, j = 0, toPrint = 0;
 
@@ -44,6 +47,12 @@ int main() {
 			if (ch == operators[i]) {
 				cout << ch;
 				t = TT_OP;
+				continue;
+			}
+			else if (ch == '='){
+				cout << ch;
+				t = TT_EQUALS;
+				continue;
 			}
 		}
 
@@ -51,7 +60,16 @@ int main() {
 			if (ch == separators[i]) {
 				cout << ch;
 				t = TT_SEP;
-			} 
+				continue;
+			}
+			else if (ch == ')') {
+				t = TT_LEFTPARENT;
+				continue;
+			}
+			else if (ch == '(') {
+				t = TT_RIGHTPARENT;
+				continue;
+			}
 		}
 
 		if (isalnum(ch) || ch == '"') {
@@ -82,21 +100,30 @@ int main() {
 			}
 		}
 		
-
 		switch (t) {
-			case TT_CONST: cout << "[CONSTANT]\n";   break;
-			case TT_KEY: cout << "[KEYWORD]\n";   break;
-			case TT_OP: cout << "[OPERATOR]\n";   break;
-			case TT_OUT: cout << "[OUTPUT]\n";   break;
-			case TT_SEP: cout << "[SEPARATOR]\n";   break;
-			case TT_VAR: cout << "[VARIABLE]\n";   break;
+		case TT_CONST: cout << "\t:\t[CONSTANT]\n"; toEvaluate.push_back(t);  break;
+			case TT_KEY: cout << "\t:\t[KEYWORD]\n"; toEvaluate.push_back(t);  break;
+			case TT_OP: cout << "\t:\t[OPERATOR]\n"; toEvaluate.push_back(t);  break;
+			case TT_OUT: cout << "\t:\t[OUTPUT]\n";  toEvaluate.push_back(t); break;
+			case TT_SEP: cout << "\t:\t[SEPARATOR]\n"; toEvaluate.push_back(t); break;
+			case TT_VAR: cout << "\t:\t[VARIABLE]\n"; toEvaluate.push_back(t);  break;
+			case TT_LEFTPARENT: cout << "\t:\t[LEFT_PARANTHESE]\n"; toEvaluate.push_back(t);  break;
+			case TT_RIGHTPARENT: cout << "\t:\t[RIGHT_PARANTHESE]\n"; toEvaluate.push_back(t);  break;
+			case TT_EQUALS: cout << "\t:\t[EQUALS]\n"; toEvaluate.push_back(t); break;
 			case TT_IGN: break;
 		}
+
 	}
 
 	fin.close();
 
+
+
 	return 0;
+}
+
+void parser(vector <token> vecOfElements) {
+	 
 }
 
 int isKeyword(char buffer[]) {
