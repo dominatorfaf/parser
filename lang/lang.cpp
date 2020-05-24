@@ -117,10 +117,6 @@ int main() {
 
 	fin.close();
 
-	for (std::vector<int>::size_type i = 0; i != toEvaluate.size(); i++) {
-		cout << toEvaluate[i];
-	}
-
 	if (parser(toEvaluate)) {
 		cout << "\nValid Syntax";
 	}
@@ -137,7 +133,7 @@ bool parser(vector <token> vecOfElements) {
 	for (std::vector<int>::size_type i = 0; i != vecOfElements.size(); i++) {
 
 		if (vecOfElements[vecOfElements.size() - 1] != TT_SEP) {
-			cout << "Semicolon expected at the end";
+			cout << "\nSemicolon expected at the end";
 			break;
 		}
 
@@ -145,19 +141,19 @@ bool parser(vector <token> vecOfElements) {
 			case TT_CONST: 
 				if ( vecOfElements[i + 1] == TT_CONST) {
 					fileError = true;
-					cout << "\nCONST error at " << i + 1;
+					cout << "\nCONST error at ~ " << i + 1;
 				}
 				break;
 			case TT_OP: 
 				if (i == 0 || vecOfElements[i + 1] == TT_OP || vecOfElements[i + 1] == TT_SEP || i == vecOfElements.size()) {
 					fileError = true;
-					cout << "\nOP error at " << i + 1;
+					cout << "\nOP error at ~ " << i + 1;
 				}
 				break;
 			case TT_SEP:
 				if (i == 0) {
 					fileError = true;
-					cout << "\nSEP error" << i + 1;
+					cout << "\nSEP error ~ " << i + 1;
 				}
 				break;
 			case TT_LEFTPARENT:  
@@ -171,6 +167,10 @@ bool parser(vector <token> vecOfElements) {
 				else {
 					openParanthese--;
 				}
+				break;
+			default:
+				cout << "unexpected token" << i;
+				fileError = true;
 				break;
 		}
 		if (fileError == true) {
