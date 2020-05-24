@@ -6,12 +6,14 @@
 
 using namespace std;
 
-struct tokens {
-
-};
-
-struct token{
-	int id;
+enum token {
+	TT_OP, //OPERATOR
+	TT_SEP,  //SEPARATOR
+	TT_KEY, //KEYWORD
+	TT_CONST, //CONSTANT
+	TT_VAR, //VAR
+	TT_OUT, //OUTPUT
+	TT_IGN, // TO BE IGNORED
 };
 
 int isKeyword(char buffer[]);
@@ -33,15 +35,19 @@ int main() {
 	while (!fin.eof()) {
 		ch = fin.get();
 
+		token t = TT_IGN;
+
 		for (i = 0; i < size(operators); ++i) {
 			if (ch == operators[i]) {
-				cout << ch << " :\t\t[OPERATOR]\n";
+				cout << ch;
+				t = TT_OP;
 			}
 		}
 
 		for (i = 0; i < size(separators); ++i) {
 			if (ch == separators[i]) {
-				cout << ch << " :\t\t[SEPARATOR]\n";
+				cout << ch;
+				t = TT_SEP;
 			} 
 		}
 
@@ -50,20 +56,38 @@ int main() {
 			if (ch == '"')
 				toPrint = 1;
 		}
-
 		else if ((ch == ' ' || ch == '\n') && (j != 0)) {
 			buffer[j] = '\0';
 			j = 0;
-			
+
 			if (toPrint == 1) {
-				cout << buffer << " :\t\t[OUTPUT]\n";
+				cout << buffer;
+				t = TT_OUT;
 				toPrint = 0;
-			} else if (isKeyword(buffer) == 1)
-				cout << buffer << " :\t\t[KEYWORD]\n";
-			else if (isdigit(buffer[0]))
-				cout << buffer << " :\t\t[CONSTANT]\n";
-			else
-				cout << buffer << " :\t\t[VARIABLE]\n";
+			}
+			else if (isKeyword(buffer) == 1) {
+				cout << buffer;
+				t = TT_KEY;
+			}
+			else if (isdigit(buffer[0])) {
+				cout << buffer;
+				t = TT_CONST;
+			}
+			else {
+				cout << buffer;
+				t = TT_VAR;
+			}
+		}
+		
+
+		switch (t) {
+			case TT_CONST: cout << "[CONSTANT]\n";   break;
+			case TT_KEY: cout << "[KEYWORD]\n";   break;
+			case TT_OP: cout << "[OPERATOR]\n";   break;
+			case TT_OUT: cout << "[OUTPUT]\n";   break;
+			case TT_SEP: cout << "[SEPARATOR]\n";   break;
+			case TT_VAR: cout << "[VARIABLE]\n";   break;
+			case TT_IGN: break;
 		}
 	}
 

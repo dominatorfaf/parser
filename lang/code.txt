@@ -1,8 +1,1 @@
-int main {
-    int ab, b, c;
-    sum = 344 + b;
-    
-    print << "Lols" << endl;
-
-    return 0;
-}
+sum = 344 + 12
