@@ -1,0 +1,4 @@
+﻿  lang.cpp
+C:\Users\domin\source\repos\lang\lang\lang.cpp(36,17): warning C4018: '<': signed/unsigned mismatch
+C:\Users\domin\source\repos\lang\lang\lang.cpp(42,17): warning C4018: '<': signed/unsigned mismatch
+  lang.vcxproj -> C:\Users\domin\source\repos\lang\Debug\lang.exe
