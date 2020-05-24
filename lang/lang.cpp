@@ -6,6 +6,9 @@
 
 using namespace std;
 
+// EXP : { KEYWORD : VARIABLE : CONSTANT : OPERATOR : CONSTANT } 
+//		     non		
+
 enum token {
 	TT_OP, //OPERATOR
 	TT_SEP,  //SEPARATOR
