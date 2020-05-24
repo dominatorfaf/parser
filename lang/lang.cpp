@@ -8,21 +8,21 @@
 using namespace std;
 
 enum token {
-	TT_OP, //OPERATOR	
-	TT_SEP,  //SEPARATOR
-	TT_KEY, //KEYWORD
-	TT_CONST, //CONSTANT	
-	TT_VAR, //VAR
-	TT_OUT, //OUTPUT
-	TT_LEFTPARENT, // (
-	TT_RIGHTPARENT, // )
-	TT_EQUALS, // =
+	TT_OP, //OPERATOR			//0
+	TT_SEP,  //SEPARATOR		//1
+	TT_KEY, //KEYWORD			//2
+	TT_CONST, //CONSTANT		//3
+	TT_VAR, //VAR				//4
+	TT_OUT, //OUTPUT			//5
+	TT_LEFTPARENT, // (			//6
+	TT_RIGHTPARENT, // )		//7
+	TT_EQUALS, // =				//8
 	TT_IGN, //TBIGNORED
 };
 
 int isKeyword(char buffer[]);
 
-void parser(vector <token> vecOfElements);
+bool parser(vector <token> vecOfElements);
 
 int main() {
 	vector <token> toEvaluate;
@@ -101,7 +101,7 @@ int main() {
 		}
 		
 		switch (t) {
-		case TT_CONST: cout << "\t:\t[CONSTANT]\n"; toEvaluate.push_back(t);  break;
+			case TT_CONST: cout << "\t:\t[CONSTANT]\n"; toEvaluate.push_back(t);  break;
 			case TT_KEY: cout << "\t:\t[KEYWORD]\n"; toEvaluate.push_back(t);  break;
 			case TT_OP: cout << "\t:\t[OPERATOR]\n"; toEvaluate.push_back(t);  break;
 			case TT_OUT: cout << "\t:\t[OUTPUT]\n";  toEvaluate.push_back(t); break;
@@ -117,13 +117,71 @@ int main() {
 
 	fin.close();
 
+	for (std::vector<int>::size_type i = 0; i != toEvaluate.size(); i++) {
+		cout << toEvaluate[i];
+	}
 
+	if (parser(toEvaluate)) {
+		cout << "\nValid Syntax";
+	}
+	else {
+		cout << "\nInvalid Syntax";
+	}
 
 	return 0;
 }
 
-void parser(vector <token> vecOfElements) {
-	 
+bool parser(vector <token> vecOfElements) {
+	bool fileError = false;
+	int openParanthese = 0; 
+	for (std::vector<int>::size_type i = 0; i != vecOfElements.size(); i++) {
+
+		if (vecOfElements[vecOfElements.size() - 1] != TT_SEP) {
+			cout << "Semicolon expected at the end";
+			break;
+		}
+
+		switch (vecOfElements[i]) {
+			case TT_CONST: 
+				if ( vecOfElements[i + 1] == TT_CONST) {
+					fileError = true;
+					cout << "\nCONST error at " << i + 1;
+				}
+				break;
+			case TT_OP: 
+				if (i == 0 || vecOfElements[i + 1] == TT_OP || vecOfElements[i + 1] == TT_SEP || i == vecOfElements.size()) {
+					fileError = true;
+					cout << "\nOP error at " << i + 1;
+				}
+				break;
+			case TT_SEP:
+				if (i == 0) {
+					fileError = true;
+					cout << "\nSEP error" << i + 1;
+				}
+				break;
+			case TT_LEFTPARENT:  
+				openParanthese++;
+				break;
+			case TT_RIGHTPARENT: 
+				if (openParanthese == 0) {
+					fileError = true;
+					cout << "\nPARANTHESE error" << i + 1;
+				}
+				else {
+					openParanthese--;
+				}
+				break;
+		}
+		if (fileError == true) {
+			return false;
+		} 
+	}
+	if (openParanthese != 0) {
+		cout << "\nopen PARANTHESE error";
+		return false;
+	}
+	return true;
 }
 
 int isKeyword(char buffer[]) {
